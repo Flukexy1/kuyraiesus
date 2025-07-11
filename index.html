@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ถึงเอฟ</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: #fff0f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 12px 24px;
+      margin: 15px;
+      border: none;
+      background-color: #ff69b4;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #ff1493;
+    }
+    .text {
+      font-size: 2rem;
+      margin: 20px 0;
+      color: #d63384;
+    }
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts"></div>
+  <div class="container">
+    <div class="text" id="text">หวัดดีจ้าเอฟ กดให้ถึงหน้าสุดท้าย</div>
+    <button id="nextBtn" onclick="nextLine()">ถัดไป</button>
+  </div>
+
+  <script>
+    const lines = [
+      "เคืองงอนอาไร ลืมรักของเราเเล้วไง",
+      "บอกอะไรก้ไม่เคยฟังนิสักที กับกุมั้ยอ่ะหยอก",
+      "รักมึงน่ะ อันนี้กุตอแหล",
+      "เด่วนี้ติดเเฟนก้เอาเหอะ กับคำว่าเพื่อนนั้น",
+      "พอกุไปหาที่โรงเรียนก้ไม่ยอมออกมา",
+      "เอาจริงมั้ย ที่พิมมาไม่มีเอาไรเกี่ยวเลย",
+      "เพราะความจริงแล้วชั้นรักพี่ฟลุ๊ค55555",
+      "อย่าด่าชั้น ชั้นไม่ผิดก่อน ด่ากุ ด่าด้วยเองด่วย",
+      "เอฟ มาตบกับกุมั้ย",
+      "ล่อเล่น รักนะไออ้น งื้มม่ะงื้อ"
+    ];
+    let index = 0;
+    function nextLine() {
+      if (index < lines.length) {
+        document.getElementById("text").innerText = lines[index];
+        index++;
+        if (index === lines.length) {
+          document.getElementById("nextBtn").style.display = "none";
+        }
+      }
+    }
+
+    // Floating 🖕🏻 emojis
+    const heartsContainer = document.querySelector(".hearts");
+    for (let i = 0; i < 30; i++) {
+      const emoji = document.createElement("div");
+      emoji.textContent = "🖕🏻";
+      emoji.style.position = "absolute";
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.top = "100vh";
+      emoji.style.fontSize = "24px";
+      emoji.style.opacity = Math.random();
+      emoji.style.animation = `float ${5 + Math.random() * 5}s linear infinite`;
+      heartsContainer.appendChild(emoji);
+    }
+  </script>
+</body>
+</html>
