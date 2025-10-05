@@ -1,111 +1,186 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ถึงเอฟ</title>
-  <style>
-    body {
-      font-family: 'Prompt', sans-serif;
-      background: #fff0f5;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .container {
-      text-align: center;
-      padding: 20px;
-    }
-    button {
-      font-size: 1.5rem;
-      padding: 12px 24px;
-      margin: 15px;
-      border: none;
-      background-color: #ff69b4;
-      color: white;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background-color: #ff1493;
-    }
-    .text {
-      font-size: 2rem;
-      margin: 20px 0;
-      color: #d63384;
-    }
-    .hearts {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: -1;
-    }
-    @keyframes float {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-110vh);
-        opacity: 0;
-      }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ขอเป็นแฟน (เวอร์ชันกดได้แน่)</title>
+<style>
+  :root{
+    --bg1:#ff8fb1; --bg2:#a88beb; --bg3:#7bdff2;
+    --card:#ffffffcc; --ink:#1f2937; --muted:#4b5563;
+    --accent:#ff5c8a; --accent2:#7c5cff; --ok:#16a34a; --ring:#ffd1e0; --glass:#ffffff55;
+    --shadow:0 10px 30px rgba(0,0,0,.15);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans Thai', sans-serif; color:var(--ink); overflow-x:hidden; background:#111;}
+  .bg{position:fixed; inset:0; z-index:-3;
+    background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+    background-size:200% 200%; animation:grad 20s ease infinite;}
+  @keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  main{min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;}
+  header{width:min(980px,100%); margin:0 auto 16px;}
+  .progress{height:8px; background:#ffffff3d; border-radius:999px; overflow:hidden; box-shadow:inset 0 1px 0 #fff5, 0 1px 2px #0002;}
+  .bar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .4s ease;}
+  .card{width:min(980px,100%); background:var(--card); backdrop-filter: blur(12px) saturate(120%);
+    border:1px solid var(--glass); border-radius:24px; padding:clamp(18px,3vw,28px); box-shadow: var(--shadow);}
+  h1{margin:0 0 12px; font-size:clamp(26px,4.2vw,42px); line-height:1.1}
+  p{color:var(--muted); margin:.5rem 0 1rem; font-size:clamp(15px,2.2vw,18px)}
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+  .btn{appearance:none; border:0; border-radius:14px; padding:14px 18px; font-weight:700; cursor:pointer;
+       transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease; box-shadow: 0 6px 16px rgba(0,0,0,.12);}
+  .btn:active{ transform: translateY(1px) scale(.99) }
+  .primary{ background:linear-gradient(180deg,var(--accent),#ff2a6f); color:#fff }
+  .ghost{ background:transparent; color:#111; border:1px dashed #00000033 }
+  .secondary{ background:#fff; color:#111 }
+  .ok{ background:linear-gradient(180deg,#34d399,#059669); color:white }
+  .grid{ display:grid; gap:14px; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  input[type="text"]{ border:1px solid #0000001f; background:#fff; padding:14px 16px; border-radius:12px; font-size:16px; outline:none; }
+  input[type="text"]:focus{ box-shadow:0 0 0 4px var(--ring) }
+  label{ font-weight:600 }
+  .chip-group{ display:flex; flex-wrap:wrap; gap:10px }
+  .chip{ padding:10px 14px; border-radius:999px; border:1px solid #0000001a; background:#fff; cursor:pointer; user-select:none; font-weight:600; }
+  .chip[data-on="1"]{ background: #ffe1eb; border-color: var(--accent); color:#b91c1c }
+  .center{ text-align:center }
+  footer{ width:min(980px,100%); margin:16px auto 0; text-align:center; color:#000000a0; font-size:14px; }
+</style>
 </head>
 <body>
-  <div class="hearts"></div>
-  <div class="container">
-    <div class="text" id="text">หวัดดีจ้าเอฟ กดให้ถึงหน้าสุดท้าย</div>
-    <button id="nextBtn" onclick="nextLine()">ถัดไป</button>
-  </div>
+  <div class="bg" aria-hidden="true"></div>
+  <main>
+    <header aria-label="ความคืบหน้า">
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </header>
 
-  <script>
-    const lines = [
-      "เคืองงอนอาไร ลืมรักของเราเเล้วไง",
-      "บอกอะไรก้ไม่เคยฟังนิสักที กับกุมั้ยอ่ะหยอก",
-      "รักมึงน่ะ อันนี้กุตอแหล",
-      "เด่วนี้ติดเเฟนก้เอาเหอะ กับคำว่าเพื่อนนั้น",
-      "พอกุไปหาที่โรงเรียนก้ไม่ยอมออกมา",
-      "เอาจริงมั้ย ที่พิมมาไม่มีเอาไรเกี่ยวเลย",
-      "เพราะความจริงแล้วชั้นรักพี่ฟลุ๊ค55555",
-      "อย่าด่าชั้น ชั้นไม่ผิดก่อน ด่ากุ ด่าด้วยเองด่วย",
-      "เอฟ มาตบกับกุมั้ย",
-      "ล่อเล่น รักนะไออ้น งื้มม่ะงื้อ"
-    ];
-    let index = 0;
-    function nextLine() {
-      if (index < lines.length) {
-        document.getElementById("text").innerText = lines[index];
-        index++;
-        if (index === lines.length) {
-          document.getElementById("nextBtn").style.display = "none";
-        }
-      }
-    }
+    <section class="card" role="group" aria-label="แบบขอเป็นแฟน">
+      <!-- Step 0 -->
+      <div class="step" data-step="0">
+        <h1>เริ่มกันเลย ✨</h1>
+        <p>ใส่ชื่อไว้ให้ข้อความมันซึ้งขึ้น (ข้ามได้ถ้าขี้เกียจ)</p>
+        <div class="grid">
+          <div class="field">
+            <label for="me">ชื่อเรา</label>
+            <input id="me" type="text" placeholder="เช่น ฟลุ๊ค" inputmode="text" />
+          </div>
+          <div class="field">
+            <label for="you">ชื่อเค้า</label>
+            <input id="you" type="text" placeholder="เช่น มีน" inputmode="text" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary next" type="button">ต่อไป</button>
+        </div>
+      </div>
 
-    // Floating 🖕🏻 emojis
-    const heartsContainer = document.querySelector(".hearts");
-    for (let i = 0; i < 30; i++) {
-      const emoji = document.createElement("div");
-      emoji.textContent = "🖕🏻";
-      emoji.style.position = "absolute";
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.top = "100vh";
-      emoji.style.fontSize = "24px";
-      emoji.style.opacity = Math.random();
-      emoji.style.animation = `float ${5 + Math.random() * 5}s linear infinite`;
-      heartsContainer.appendChild(emoji);
+      <!-- Step 1 -->
+      <div class="step" data-step="1" hidden>
+        <h1>เหตุผลที่ชอบคุณ…</h1>
+        <p>เลือกได้หลายข้อเลย ❤️ (กดที่ชิปเพื่อสลับเลือก)</p>
+        <div class="chip-group" id="reasons">
+          <div class="chip">ยิ้มแล้วโลกละลาย</div>
+          <div class="chip">คุยแล้วสบายใจ</div>
+          <div class="chip">ขับรถเก่งพาไปกินของอร่อย</div>
+          <div class="chip">คิดถึงตลอด</div>
+          <div class="chip">บ๊องๆนิดหน่อย น่ารักมาก</div>
+          <div class="chip">ตั้งใจกับสิ่งที่รัก</div>
+          <div class="chip">เรารู้สึกปลอดภัยเวลาอยู่ด้วย</div>
+          <div class="chip">คือคนโปรดของเรา</div>
+        </div>
+        <div class="actions">
+          <button class="btn ghost prev" type="button">ย้อนกลับ</button>
+          <button class="btn primary next" type="button">ต่อไป</button>
+        </div>
+      </div>
+
+      <!-- Step 2 (ASK) -->
+      <div class="step" data-step="2" hidden>
+        <div class="center">
+          <h1 id="askText">จะเป็นแฟนกับเรามั้ย ? 🥹💖</h1>
+          <p id="askSub" style="color:#222">เราจะดูแลกันดีๆ แล้วพาไปกินของอร่อยบ่อยๆ</p>
+          <div class="actions" style="justify-content:center">
+            <button class="btn ok" id="yesBtn" type="button" aria-label="ตกลง">ตกลงเล้ยยย 💘</button>
+            <button class="btn secondary prev" type="button">ย้อนกลับ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 (CELEBRATE) -->
+      <div class="step" data-step="3" hidden>
+        <div class="center" style="padding:10px">
+          <div style="display:inline-block; padding:6px 10px; border-radius:999px; background:#111; color:#fff; font-weight:700;">OMG YES! 🎉</div>
+          <h1>เป็นแฟนกันแล้วน้า</h1>
+          <p style="color:#111;opacity:.9">บันทึกวันนี้ไว้เลย — <span id="today"></span></p>
+          <div class="actions" style="justify-content:center">
+            <button class="btn primary" id="restart" type="button">เริ่มใหม่อีกครั้ง</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>ไฟล์เดียวจบ • “ต่อไป” ทำงานแน่ 💗</footer>
+  </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  // กันเหนียว: บังคับปุ่มทุกปุ่มเป็น type="button"
+  document.querySelectorAll('button').forEach(b=>{ if(!b.getAttribute('type')) b.setAttribute('type','button'); });
+
+  const steps = $$('.step');
+  const bar = $('#bar');
+  let step = 0;
+
+  function show(n){
+    step = Math.max(0, Math.min(steps.length-1, n));
+    steps.forEach((el,i)=> el.hidden = i!==step);
+    bar.style.width = (step/(steps.length-1))*100 + '%';
+    if(step===2) updateAskText();
+    if(step===3) updateToday();
+  }
+
+  function updateAskText(){
+    const me = ($('#me').value || 'เรา').trim();
+    const you = ($('#you').value || 'คุณ').trim();
+    $('#askText').textContent = `คุณ${you} จะเป็นแฟนกับ${me} มั้ย ? 🥹💖`;
+  }
+
+  function updateToday(){
+    const opt = { dateStyle:'full', timeStyle:'short' };
+    $('#today').textContent = new Date().toLocaleString('th-TH', opt);
+  }
+
+  // toggle chips
+  const reasons = $('#reasons');
+  if (reasons) {
+    reasons.addEventListener('click', e=>{
+      const c = e.target.closest('.chip'); if(!c) return;
+      c.dataset.on = c.dataset.on === '1' ? '0' : '1';
+    });
+  }
+
+  // next / prev
+  $$('.next').forEach(b=> b.addEventListener('click', ()=> show(step+1)));
+  $$('.prev').forEach(b=> b.addEventListener('click', ()=> show(step-1)));
+
+  // yes -> celebrate
+  $('#yesBtn').addEventListener('click', ()=> show(3));
+  // restart -> back to start
+  $('#restart').addEventListener('click', ()=> show(0));
+
+  // Enter เพื่อไปหน้าถัดไป
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' && !e.isComposing){
+      const cur = steps[step];
+      const nextBtn = cur.querySelector('.next');
+      if(nextBtn) nextBtn.click();
     }
-  </script>
+  });
+
+  // เริ่มจอแรก
+  show(0);
+});
+</script>
 </body>
 </html>
