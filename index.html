@@ -1,186 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ขอเป็นแฟน (เวอร์ชันกดได้แน่)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>สุ่มด่าผัว — Random Roast</title>
+<meta name="description" content="เว็บสุ่มด่าผัว โหมดเผ็ดน้อย-เผ็ดมาก-ไฟลุก กดปุ่มแล้วฟาดคำเดียวจอด">
 <style>
   :root{
-    --bg1:#ff8fb1; --bg2:#a88beb; --bg3:#7bdff2;
-    --card:#ffffffcc; --ink:#1f2937; --muted:#4b5563;
-    --accent:#ff5c8a; --accent2:#7c5cff; --ok:#16a34a; --ring:#ffd1e0; --glass:#ffffff55;
-    --shadow:0 10px 30px rgba(0,0,0,.15);
+    --bg:#0b0b0f;
+    --fg:#f5f7ff;
+    --muted:#a3a7b7;
+    --card:#14141a;
+    --accent:#8a7bff;
+    --accent-2:#ff6b6b;
+    --accent-3:#ffd166;
+    --ring: 0 0 0 2px #8a7bff55, 0 0 30px #8a7bff33;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans Thai', sans-serif; color:var(--ink); overflow-x:hidden; background:#111;}
-  .bg{position:fixed; inset:0; z-index:-3;
-    background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
-    background-size:200% 200%; animation:grad 20s ease infinite;}
-  @keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  main{min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;}
-  header{width:min(980px,100%); margin:0 auto 16px;}
-  .progress{height:8px; background:#ffffff3d; border-radius:999px; overflow:hidden; box-shadow:inset 0 1px 0 #fff5, 0 1px 2px #0002;}
-  .bar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .4s ease;}
-  .card{width:min(980px,100%); background:var(--card); backdrop-filter: blur(12px) saturate(120%);
-    border:1px solid var(--glass); border-radius:24px; padding:clamp(18px,3vw,28px); box-shadow: var(--shadow);}
-  h1{margin:0 0 12px; font-size:clamp(26px,4.2vw,42px); line-height:1.1}
-  p{color:var(--muted); margin:.5rem 0 1rem; font-size:clamp(15px,2.2vw,18px)}
-  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
-  .btn{appearance:none; border:0; border-radius:14px; padding:14px 18px; font-weight:700; cursor:pointer;
-       transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease; box-shadow: 0 6px 16px rgba(0,0,0,.12);}
-  .btn:active{ transform: translateY(1px) scale(.99) }
-  .primary{ background:linear-gradient(180deg,var(--accent),#ff2a6f); color:#fff }
-  .ghost{ background:transparent; color:#111; border:1px dashed #00000033 }
-  .secondary{ background:#fff; color:#111 }
-  .ok{ background:linear-gradient(180deg,#34d399,#059669); color:white }
-  .grid{ display:grid; gap:14px; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
-  .field{ display:flex; flex-direction:column; gap:6px; }
-  input[type="text"]{ border:1px solid #0000001f; background:#fff; padding:14px 16px; border-radius:12px; font-size:16px; outline:none; }
-  input[type="text"]:focus{ box-shadow:0 0 0 4px var(--ring) }
-  label{ font-weight:600 }
-  .chip-group{ display:flex; flex-wrap:wrap; gap:10px }
-  .chip{ padding:10px 14px; border-radius:999px; border:1px solid #0000001a; background:#fff; cursor:pointer; user-select:none; font-weight:600; }
-  .chip[data-on="1"]{ background: #ffe1eb; border-color: var(--accent); color:#b91c1c }
-  .center{ text-align:center }
-  footer{ width:min(980px,100%); margin:16px auto 0; text-align:center; color:#000000a0; font-size:14px; }
+  body{
+    margin:0;
+    font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", "Noto Sans Thai", "Sukhumvit Set", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% 0%, #1c1730 0%, transparent 60%),
+      radial-gradient(1200px 600px at 90% 10%, #321626 0%, transparent 60%),
+      linear-gradient(180deg, #0b0b0f 0%, #0b0b0f 100%);
+    color:var(--fg);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .wrap{
+    width:min(880px, 100%);
+  }
+  header{
+    display:flex; align-items:center; gap:16px; margin-bottom:18px;
+  }
+  .logo{
+    width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:grid; place-items:center; box-shadow: var(--ring);
+    font-weight:800;
+  }
+  .logo span{filter:drop-shadow(0 2px 6px #000)}
+  h1{margin:0; font-size:clamp(22px, 3vw, 30px); letter-spacing:.3px}
+  .card{
+    background:color-mix(in oklab, var(--card) 88%, black);
+    border:1px solid #262633;
+    border-radius:18px;
+    box-shadow: 0 10px 40px #0006, inset 0 0 0 1px #ffffff08;
+    overflow:hidden;
+  }
+  .controls{display:flex; gap:12px; flex-wrap:wrap; padding:16px; background:#0f0f15; border-bottom:1px solid #222231}
+  .controls .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+  .seg{
+    display:inline-flex; background:#171722; border:1px solid #2a2a3a; border-radius:12px; overflow:hidden;
+  }
+  .seg button{
+    all:unset; padding:10px 14px; cursor:pointer; color:var(--muted); font-weight:700;
+  }
+  .seg button[aria-pressed="true"]{
+    color:white; background:linear-gradient(180deg, #27273a, #1b1b29);
+    box-shadow: inset 0 0 0 1px #8a7bff55;
+  }
+  .btn{
+    all:unset; cursor:pointer; padding:12px 18px; border-radius:12px; font-weight:800; letter-spacing:.3px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 8px 30px #8a7bff33;
+  }
+  .btn.small{padding:10px 14px; font-weight:700}
+  .btn.ghost{
+    background:#191926; border:1px solid #2b2b3a; box-shadow:none;
+  }
+  .btn:active{transform:translateY(1px)}
+  .output{
+    padding:28px; display:grid; gap:16px;
+  }
+  .line{
+    font-size:clamp(20px, 2.9vw, 30px);
+    font-weight:900; letter-spacing:.2px; line-height:1.45;
+    text-wrap:balance;
+  }
+  .hint{color:var(--muted); font-size:13px}
+  .flex{display:flex; gap:10px; flex-wrap:wrap}
+  .pill{
+    font-size:12px; color:#222; background:var(--fg); padding:6px 10px; border-radius:999px; font-weight:800;
+  }
+  footer{margin-top:12px; color:var(--muted); font-size:12px; text-align:center}
+  .kudos{opacity:.8}
+  .warn{color:#ffd5d5}
+  .switch{
+    display:inline-flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid #2a2a3a; border-radius:12px;
+    background:#171722
+  }
+  input[type="checkbox"]{width:18px; height:18px}
+  .copy-status{font-size:12px; color:#9fe4a6}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"></div>
-  <main>
-    <header aria-label="ความคืบหน้า">
-      <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="wrap">
+    <header>
+      <div class="logo"><span>🔥</span></div>
+      <div>
+        <h1>สุ่มด่าผัว <span style="opacity:.5">— Random Roast</span></h1>
+        <div class="kudos">โหมดเผ็ดจัดสไตล์ Gen Z • ไม่ใช้ถ้อยคำเหยียดกลุ่มคน • ไม่มีการขู่ใช้ความรุนแรง</div>
+      </div>
     </header>
 
-    <section class="card" role="group" aria-label="แบบขอเป็นแฟน">
-      <!-- Step 0 -->
-      <div class="step" data-step="0">
-        <h1>เริ่มกันเลย ✨</h1>
-        <p>ใส่ชื่อไว้ให้ข้อความมันซึ้งขึ้น (ข้ามได้ถ้าขี้เกียจ)</p>
-        <div class="grid">
-          <div class="field">
-            <label for="me">ชื่อเรา</label>
-            <input id="me" type="text" placeholder="เช่น ฟลุ๊ค" inputmode="text" />
+    <div class="card">
+      <div class="controls">
+        <div class="row">
+          <div class="seg" role="group" aria-label="ระดับความเผ็ด">
+            <button id="mildBtn" aria-pressed="true">เผ็ดน้อย</button>
+            <button id="spicyBtn" aria-pressed="false">เผ็ดมาก</button>
+            <button id="infernoBtn" aria-pressed="false">ไฟลุก</button>
           </div>
-          <div class="field">
-            <label for="you">ชื่อเค้า</label>
-            <input id="you" type="text" placeholder="เช่น มีน" inputmode="text" />
-          </div>
+          <button id="rollBtn" class="btn">ด่าเลย 🔥</button>
+          <button id="copyBtn" class="btn ghost small">คัดลอก</button>
+          <span id="copied" class="copy-status hidden">คัดลอกแล้ว ✔</span>
         </div>
-        <div class="actions">
-          <button class="btn primary next" type="button">ต่อไป</button>
+        <div class="row">
+          <label class="switch">
+            <input id="autoChk" type="checkbox"> <span>สุ่มอัตโนมัติทุก 2 วิ</span>
+          </label>
+          <label class="switch">
+            <input id="nameChk" type="checkbox"> <span>ใส่ชื่อ “ผัว” เป็น <input id="nameBox" type="text" placeholder="เช่น โจ" style="width:90px; margin-left:6px; background:#0f0f15; color:#fff; border:1px solid #2a2a3a; border-radius:8px; padding:6px 8px;"></span>
+          </label>
         </div>
       </div>
 
-      <!-- Step 1 -->
-      <div class="step" data-step="1" hidden>
-        <h1>เหตุผลที่ชอบคุณ…</h1>
-        <p>เลือกได้หลายข้อเลย ❤️ (กดที่ชิปเพื่อสลับเลือก)</p>
-        <div class="chip-group" id="reasons">
-          <div class="chip">ยิ้มแล้วโลกละลาย</div>
-          <div class="chip">คุยแล้วสบายใจ</div>
-          <div class="chip">ขับรถเก่งพาไปกินของอร่อย</div>
-          <div class="chip">คิดถึงตลอด</div>
-          <div class="chip">บ๊องๆนิดหน่อย น่ารักมาก</div>
-          <div class="chip">ตั้งใจกับสิ่งที่รัก</div>
-          <div class="chip">เรารู้สึกปลอดภัยเวลาอยู่ด้วย</div>
-          <div class="chip">คือคนโปรดของเรา</div>
+      <div class="output">
+        <div id="line" class="line">พร้อมมั้ย… กด “ด่าเลย” ได้แล้ว 🙂</div>
+        <div class="flex">
+          <div class="pill">สุ่มไม่ซ้ำซ้อน</div>
+          <div class="pill">คัดลอกได้ไว</div>
+          <div class="pill">โหมดไฟลุกโคตรเผ็ด</div>
         </div>
-        <div class="actions">
-          <button class="btn ghost prev" type="button">ย้อนกลับ</button>
-          <button class="btn primary next" type="button">ต่อไป</button>
-        </div>
+        <div class="hint warn">คำในเว็บนี้หยาบมาก — ใช้ด้วยความรับผิดชอบนะเพื่อน</div>
       </div>
+    </div>
 
-      <!-- Step 2 (ASK) -->
-      <div class="step" data-step="2" hidden>
-        <div class="center">
-          <h1 id="askText">จะเป็นแฟนกับเรามั้ย ? 🥹💖</h1>
-          <p id="askSub" style="color:#222">เราจะดูแลกันดีๆ แล้วพาไปกินของอร่อยบ่อยๆ</p>
-          <div class="actions" style="justify-content:center">
-            <button class="btn ok" id="yesBtn" type="button" aria-label="ตกลง">ตกลงเล้ยยย 💘</button>
-            <button class="btn secondary prev" type="button">ย้อนกลับ</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3 (CELEBRATE) -->
-      <div class="step" data-step="3" hidden>
-        <div class="center" style="padding:10px">
-          <div style="display:inline-block; padding:6px 10px; border-radius:999px; background:#111; color:#fff; font-weight:700;">OMG YES! 🎉</div>
-          <h1>เป็นแฟนกันแล้วน้า</h1>
-          <p style="color:#111;opacity:.9">บันทึกวันนี้ไว้เลย — <span id="today"></span></p>
-          <div class="actions" style="justify-content:center">
-            <button class="btn primary" id="restart" type="button">เริ่มใหม่อีกครั้ง</button>
-          </div>
-        </div>
-      </div>
-    </section>
-    <footer>ไฟล์เดียวจบ • “ต่อไป” ทำงานแน่ 💗</footer>
-  </main>
+    <footer>ทำไว้ขำ ๆ ระบายอารมณ์ ไม่มีเจตนายุยงให้ทำร้ายใคร 💜</footer>
+  </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
+(function(){
+  // --- DATA (no hate speech, no threats of violence) ---
+  const mild = [
+    "ผัวอะไรพูดมากแต่งานน้อย",
+    "ขยันตอนนอน ขี้เกียจตอนตื่น เก่งจังนะ",
+    "สมองปลาทูยังน่ากอดกว่านี้",
+    "สกิลแก้ตัวขั้นเทพ แต่ไม่เคยแก้ไข",
+    "บอกจะทำพรุ่งนี้ทุกวัน นาฬิกาทรายยังเบื่อ",
+    "ลืมเก่งยิ่งกว่าแอปโน้ตลบเอง",
+    "ปากดี แต่มือไม่ดีสักอย่าง",
+    "สายบอกฝันใหญ่ แต่ลงมือเท่าเม็ดงา",
+    "อยู่เฉย ๆ ยังน่ารำคาญเป็นงานอดิเรก",
+    "อัปเดตช้าเหมือนไวไฟหอพัก",
+    "เก่งแต่หายตัวตอนต้องช่วย",
+    "โหมดเงียบใส่ความรับผิดชอบตลอด",
+    "วิเคราะห์เก่ง แต่ปฏิบัติศูนย์แต้ม",
+    "ทำเป็นฟัง แต่ไม่เคยเข้าใจ",
+    "คำสัญญา = คำลอย",
+    "ชอบดราม่าเหมือนสมัครสมาชิก",
+    "มืออุ่นใจเย็น สมองหนาวจัด",
+    "แก้ปัญหาโดยโยนให้คนอื่นเก่งมาก",
+    "พูดให้เริ่ด แต่ทำให้เละ",
+    "ขี้บ่นระดับพัดลมสั่นทั้งห้อง",
+    "เก็บขยะอารมณ์ไว้เต็มบ้าน",
+    "โทษดาวโทษเดือน ยอมรับศูนย์",
+    "คิดว่าตัวเองเป็นพระเอก แต่บทแถมยังไม่ถึง",
+    "เชี่ยววิชาเลี่ยงงาน 10/10",
+    "ทำตัวเหมือนสัญญาณไฟเหลือง—ลังเลทั้งวัน"
+  ];
 
-  // กันเหนียว: บังคับปุ่มทุกปุ่มเป็น type="button"
-  document.querySelectorAll('button').forEach(b=>{ if(!b.getAttribute('type')) b.setAttribute('type','button'); });
+  const spicy = [
+    "ไอ้ควายอัปเกรด ยังฉลาดกว่านี้หน่อย",
+    "โง่ชนิดที่กูงงว่าหายใจเองได้ไง",
+    "สันขวานเดินได้ ฉายาเหมาะมาก",
+    "เหี้ยยังส่ายหน้าให้ความกาก",
+    "ปากหมาแต่มือสาก ทำอะไรเป็นมั้ย",
+    "ขี้โม้จนกำแพงยังอาย",
+    "สมองเท่าเม็ดถั่วแต่ท่าทีใหญ่เท่าดาวเคราะห์",
+    "โครมครามทุกโปรเจกต์ ศิลปะการพัง",
+    "ดองงานจนกลายเป็นผลิตภัณฑ์หมักดอง",
+    "หน้าไม่อายระดับแพลตินัม",
+    "เอะอะก็โทษโลก แต่ตัวเองไม่ขยับ",
+    "หัวโล่งราวทะเลทราย—ลมพัดยังไม่มีเสียง",
+    "พูดเก่งเหมือนพิธีกรแต่ไร้สาระ",
+    "คิดช้ากว่าเต่าติดโคลน",
+    "ทำตัวเป็นภาระจิตใจขั้นสุด",
+    "กระแดะใส่เหตุผลทั้งวัน",
+    "งานง่ายทำยาก งานยากหายเงียบ",
+    "ความรับผิดชอบระดับศูนย์ Kelvin",
+    "ดราม่าเป็นกีฬา โอลิมปิกคงได้เหรียญ",
+    "คอนเทนต์ชีวิตคือ ‘ผัดวันประกันพรุ่ง’ เวอร์ชันไลฟ์"
+  ];
 
-  const steps = $$('.step');
-  const bar = $('#bar');
-  let step = 0;
+  const inferno = [
+    "ไอ้เหี้ยเวอร์ชันทดลอง—บั๊กทั้งความคิดและการกระทำ",
+    "ไอ้สัสเอ๊ย เสียงดังแต่ไร้ผลงาน",
+    "ควายพ่นลม—ปากอย่างเดียวที่ขยับ",
+    "ไอ้ชาติหมาเวอร์ ๆ เรื่องแถนี่หนึ่ง",
+    "โง่บรรลุโสดาบัน—ปล่อยวางจากตรรกะหมด",
+    "ขยะอีโก้เดินได้ เห็นแก่ตัวเป็นระบบหายใจ",
+    "ไอ้หน้ากระดาษเปล่า โจทย์อะไรก็ว่างเปล่า",
+    "สันดานดอง เห็นเดดไลน์เป็นของสะสม",
+    "ไอ้หัวขวด หมุนก็ไม่ติดไอเดีย",
+    "ปากเสียจนถังขยะยังรู้สึกสะอาดกว่า",
+    "ไอ้ตัวภาระ ชีวิตคือไฟล์ช้ำ ๆ ค้างโหลด",
+    "สมองแรม 0 ไบต์ รีเฟรชยังไม่ช่วย",
+    "จิตใจกากจนคีย์บอร์ดพิมพ์คำว่ารับผิดชอบไม่ออก",
+    "ไอ้หน้ามึนแบบไม่เกรงใจท้องฟ้า",
+    "ถ้าความกากมีค่าไฟบ้านคงดับไปแล้ว",
+    "ไอ้ตัวถ่วง ชอบว่ายทวนตรรกะ",
+    "นิสัยเละเทะจนกลูเตนยังแพ้",
+    "ไอ้ฝุ่นพิษ—อยู่ตรงไหนก็ทำคนแสบตา",
+    "สกิลพ่นน้ำลายขั้นตำนาน ผลงาน = ศูนย์",
+    "ไอ้ตัวเปลืองอากาศ โปรดคืนอ๊อกซิเจนให้โลก"
+  ];
 
-  function show(n){
-    step = Math.max(0, Math.min(steps.length-1, n));
-    steps.forEach((el,i)=> el.hidden = i!==step);
-    bar.style.width = (step/(steps.length-1))*100 + '%';
-    if(step===2) updateAskText();
-    if(step===3) updateToday();
+  const state = {
+    level: "mild",
+    prevIndex: -1,
+    autoTimer: null
+  };
+
+  function pick(arr){
+    if(arr.length <= 1) return arr[0] || "";
+    let i;
+    do { i = Math.floor(Math.random()*arr.length); } while(i === state.prevIndex);
+    state.prevIndex = i;
+    return arr[i];
   }
 
-  function updateAskText(){
-    const me = ($('#me').value || 'เรา').trim();
-    const you = ($('#you').value || 'คุณ').trim();
-    $('#askText').textContent = `คุณ${you} จะเป็นแฟนกับ${me} มั้ย ? 🥹💖`;
+  function currentPool(){
+    if(state.level === "mild") return mild;
+    if(state.level === "spicy") return spicy;
+    return inferno;
   }
 
-  function updateToday(){
-    const opt = { dateStyle:'full', timeStyle:'short' };
-    $('#today').textContent = new Date().toLocaleString('th-TH', opt);
+  function withName(text){
+    const chk = document.getElementById("nameChk");
+    const box = document.getElementById("nameBox");
+    if(chk.checked && box.value.trim()){
+      const name = box.value.trim();
+      // Replace “ผัว” at first occurrence with name (e.g., โจ)
+      return text.replace("ผัว", name);
+    }
+    return text;
   }
 
-  // toggle chips
-  const reasons = $('#reasons');
-  if (reasons) {
-    reasons.addEventListener('click', e=>{
-      const c = e.target.closest('.chip'); if(!c) return;
-      c.dataset.on = c.dataset.on === '1' ? '0' : '1';
+  function roll(){
+    const line = document.getElementById("line");
+    const s = withName(pick(currentPool()));
+    line.textContent = s;
+    document.getElementById("copied").classList.add("hidden");
+  }
+
+  function setLevel(lv){
+    state.level = lv;
+    document.getElementById("mildBtn").setAttribute("aria-pressed", lv==="mild");
+    document.getElementById("spicyBtn").setAttribute("aria-pressed", lv==="spicy");
+    document.getElementById("infernoBtn").setAttribute("aria-pressed", lv==="inferno");
+    roll();
+  }
+
+  function copyOut(){
+    const txt = document.getElementById("line").textContent.trim();
+    if(!txt) return;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const tag = document.getElementById("copied");
+      tag.classList.remove("hidden");
+      setTimeout(()=>tag.classList.add("hidden"), 1200);
     });
   }
 
-  // next / prev
-  $$('.next').forEach(b=> b.addEventListener('click', ()=> show(step+1)));
-  $$('.prev').forEach(b=> b.addEventListener('click', ()=> show(step-1)));
-
-  // yes -> celebrate
-  $('#yesBtn').addEventListener('click', ()=> show(3));
-  // restart -> back to start
-  $('#restart').addEventListener('click', ()=> show(0));
-
-  // Enter เพื่อไปหน้าถัดไป
-  document.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter' && !e.isComposing){
-      const cur = steps[step];
-      const nextBtn = cur.querySelector('.next');
-      if(nextBtn) nextBtn.click();
+  function autoToggle(checked){
+    if(checked){
+      roll();
+      state.autoTimer = setInterval(roll, 2000);
+    }else{
+      clearInterval(state.autoTimer);
+      state.autoTimer = null;
     }
-  });
+  }
 
-  // เริ่มจอแรก
-  show(0);
-});
+  // --- Wire up ---
+  document.getElementById("rollBtn").addEventListener("click", roll);
+  document.getElementById("copyBtn").addEventListener("click", copyOut);
+  document.getElementById("mildBtn").addEventListener("click", ()=>setLevel("mild"));
+  document.getElementById("spicyBtn").addEventListener("click", ()=>setLevel("spicy"));
+  document.getElementById("infernoBtn").addEventListener("click", ()=>setLevel("inferno"));
+  document.getElementById("autoChk").addEventListener("change", (e)=>autoToggle(e.target.checked));
+  document.getElementById("nameChk").addEventListener("change", ()=>roll());
+  document.getElementById("nameBox").addEventListener("input", ()=>roll());
+
+  // Initial
+  roll();
+})();
 </script>
 </body>
 </html>
